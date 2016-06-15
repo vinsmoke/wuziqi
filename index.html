@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>扫雷</title>
+	<style>
+	.tipp{
+		width:600px;
+		height:300px;
+		background:#24EDEA;
+		z-index:20;
+		position: absolute;
+		margin:auto;
+		bottom:0;
+		left:0;
+		right:0;
+		transition:all 0.3s ease;
+		top:0px;
+		background:url(./image/pda.png);
+	}
+	.contained{
+		width:600px;
+		height:600px;
+		border:1px solid red;
+		position: absolute;
+		margin:auto;
+		top:0;
+		bottom:0;
+		left:0;
+		right:0;
+		z-index:-1;
+	}
+	.block{
+		width:58px;
+		height:58px;
+		border:1px solid blue;
+		background:url(./image/caomie.png);
+		background-size:58px 58px;
+		background-position:0 0;
+		float:left;
+		text-align:center;
+		line-height:58px;
+		z-index:-1;
+	}
+	body{
+		background:url(./image/p1d.png);
+	}
+	.tip{
+		background:white;
+	}
+	.biaoji{
+		/* content:'';
+			display:block; */
+	background:url(./image/p1aad.png);
+
+}
+	.defen{
+		position: absolute;
+		width:200px;
+		height:100px;
+		margin:auto;
+		top:30px;
+		left:0;
+		right:0;
+		padding:30px;
+		font-size:40px;
+		color:#fff;
+		text-align:center;
+	}
+	.geju{
+		position: absolute;
+	}
+	.tuichu,.zailai{
+		font-size:30px;
+		color:white;
+		display:inline-block;
+		padding:15px 20px;
+		margin-top:200px;
+		margin-left:117px;
+		cursor:pointer;
+	}
+	.tuichu,.zailai{  background:#BFED24; }
+	.lei{
+		background-position:0 0;
+	}
+	</style>
+</head>
+<body>
+<div class="tipp" style="display:none;">
+
+<div class="geju">
+	<div class="tuichu">退出</div>
+	<div class="zailai">再来一局</div></div>
+
+</div>
+<div class="contained"></div>
+
+</body>
+<script src="./js/jquery-1.12.0.js"></script>
+<script >
+	$(function(){
+		var contained=$('.contained');
+		var xy2Id=function(a,b){
+			return a+'-'+b
+		}
+		/*$('.tuichu').on('click',function(){
+			location.reload()
+		})
+		$('.zailai').on('click',function(){
+			location.reload()
+		})*/
+	/*	$('.contained').on('mouseenter',function(){
+			console.log(2323)
+    $(this).css({cursor:"url(we.png),auto"})
+  })*/
+		var jisuan=function(x,y){
+			var num=0
+			if($('#'+xy2Id(x,y-1)).is('.lei')){num++}
+		    if($('#'+xy2Id(x,y+1)).is('.lei')){num++}
+		    if($('#'+xy2Id(x-1,y-1)).is('.lei')){num++}
+		    if($('#'+xy2Id(x-1,y)).is('.lei')){num++}
+		    if($('#'+xy2Id(x-1,y+1)).is('.lei')){num++} 
+		    if($('#'+xy2Id(x+1,y-1)).is('.lei')){num++}
+		    if($('#'+xy2Id(x+1,y+1)).is('.lei')){num++}
+		    if($('#'+xy2Id(x+1,y)).is('.lei')){num++}
+				return num;
+		}
+		var zuo=function(e){
+			if($(this).is('.biaoji')){
+				return;
+			}else if(e.data.lei){
+				tipss()
+				$('.lei').css({background:'url(./image/pdasas.png)'})
+			}else{
+				$(this).text(jisuan(e.data.x,e.data.y)).addClass('tip')
+			}
+		}
+
+		var you = function(){
+			$(document).on('contextmenu',false);
+			if($(this).is('.tip')){
+				return;
+			}else{
+				$(this).toggleClass('biaoji')
+			}
+			if($('.biaoji').length==$('.lei').length){
+				if($('.biaoji.lei').length===$('.lei').length){tipss()}
+			}
+			
+
+		}
+		var clickHeader=function(e){
+			if(e.which===1){
+				$.proxy(zuo,this)(e)
+			}else if(e.which===3){
+				$.proxy(you,this)(e)
+			}
+		}
+		for(var i=0;i<10;i++){
+			for(var j=0;j<10;j++){
+				var islei=Math.random()>0.89;
+				//$(document).on('contextmenu',false)
+				$('<div>').attr('id',i+'-'+j).addClass(function(){
+					return 'block '+ (islei?'lei':'')
+				}).on('mousedown',{x:i,y:j,lei:islei},clickHeader).appendTo(contained)
+			}
+		}
+		var xaishi=function(){
+			$('.tipp').css({display:'block'});
+		
+		}
+		var yincang=function(){
+			$('.tipp').css({display:'none'});
+				$('.contained').empty();
+			for(var i=0;i<10;i++){
+			for(var j=0;j<10;j++){
+				var islei=Math.random()>0.89;
+				//$(document).on('contextmenu',false)
+				$('<div>').attr('id',i+'-'+j).addClass(function(){
+					return 'block '+ (islei?'lei':'')
+				}).on('mousedown',{x:i,y:j,lei:islei},clickHeader).appendTo(contained)
+			}
+		}
+
+		}
+		var tipss=function(e){
+			xaishi()
+			if($('.biaoji.lei').length===$('.lei').length){
+				$('<div>').addClass('defen').text('恭喜通关').appendTo($('.tipp'))
+			}else{
+				$('<div>').addClass('defen').text('再来一局').appendTo($('.tipp'))
+			}
+			
+		}
+		$('.tuichu').on('click',yincang);
+		$('.zailai').on('click',yincang);
+	})
+
+</script>
+</html>
